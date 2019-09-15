@@ -4,7 +4,7 @@ set.seed(7)
 source('func_adaboost.R')
 library(rpart)
 
-raw <- read.csv("adult.csv", strip.white=TRUE)
+raw <- read.csv("data/adult.csv", strip.white=TRUE)
 names(raw) <- c( 'age', 'workclass', 'fnlwgt', 'education', 'education-num',
                  'marital-status', 'occupation', 'relationship', 'race', 'sex', 
                  'capital-gain', 'capital-loss', 'hours-per-week', 'native-country',
@@ -14,7 +14,7 @@ summary(raw)
 row.names(raw) <- NULL
 raw <- raw[raw$workclass != '?',]
 raw <- raw[raw$`native-country` != '?',]
-#write.csv(raw, "adult_cleaned.csv", row.names = F)
+write.csv(raw, "data/adult_cleaned.csv", row.names = F)
 
 raw$sal <- ifelse(raw$sal ==">50K",1,-1)
 
