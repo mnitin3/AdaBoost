@@ -10,20 +10,15 @@ pred_test <- rep(0,len_test)
 err_train_i <- vector();
 err_test_i <- vector();
 for(i in 1:iteration){
-  cat(paste("\n\n run:",i))
+  cat(paste("\n\n run:",i," ::: "))
   fit <- rpart( y_train ~ ., data=x_train,control = rpart.control(maxdepth = 1),
                 method = "class", weights = w)
  
   pred_train_i <- predict(fit,x_train, type="class")
   pred_test_i  <- predict(fit,x_test, type="class")
-  
-  #print(table(pred_train_i,y_train))
-  #print(table(pred_test_i,y_test))
  
   #indicator function
   miss = ifelse(pred_train_i != y_train,1,0)
-  miss
-  #print(sum(miss)/length(y_train))
 
   #Error
   err_m <- w%*%miss
@@ -31,8 +26,6 @@ for(i in 1:iteration){
 
   #Alpha
   alpha_m <- as.numeric(0.5*log((1-err_m)/err_m))
-  #print(paste("Alpha: ",alpha_m))
-  
   
   # New weights
   miss_wt <- ifelse(miss == 0,1, -1)
@@ -46,9 +39,8 @@ for(i in 1:iteration){
    
   # Add to prediction
   pred_train <- pred_train + (alpha_m*(pred_tr_i))
-  #print(pred_train[1:6])
   pred_test  <- pred_test  + (alpha_m*(pred_te_i))
-  
+
   pred_train_res <- sign(pred_train)
   pred_test_res <- sign(pred_test)
   
@@ -56,8 +48,8 @@ for(i in 1:iteration){
   err_train_i[i] <-  sum(pred_train_res != y_train)/length(y_train)
   err_test_i[i] <-  sum(pred_test_res != y_test)/length(y_test)
   
-  print(paste("Train Error:", round(err_train_i[i],5)*100))
-  print(paste("Test Error:", round(err_test_i[i],5)*100))
+  cat(paste("\tTrain Error:", round(err_train_i[i],5)*100))
+  cat(paste("\tTest Error:", round(err_test_i[i],5)*100))
 }
   pred<- list(predTrain = pred_train_res, predTest = pred_train_res,
               errTrain = err_train_i, errTest= err_test_i)
